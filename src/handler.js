@@ -1,7 +1,7 @@
-const {nanoid} = require('nanoid');
+const { nanoid } = require('nanoid');
 const books = require('./books');
 
-const addBookHandler = (request, h) => {
+const HandlerAddBook = (request, h) => {
   const checkNameProperty = request.payload.hasOwnProperty('name');
 
   if (!checkNameProperty) {// jika nama kosong
@@ -12,7 +12,7 @@ const addBookHandler = (request, h) => {
     response.code(400);
     return response;
   }
-  const {name, year, author, summary, publisher, pageCount, readPage, reading} = request.payload;// membaca request body
+  const { name, year, author, summary, publisher, pageCount, readPage, reading } = request.payload;// membaca request body
 
   const id = nanoid(16);// membuat karakter string acak sepanjang 16 karakter
   const finished = pageCount === readPage ? true : false;// kondisi ? nilai jika kondisi true : nilai jika kondisi false
@@ -56,17 +56,17 @@ const addBookHandler = (request, h) => {
   return response;
 };
 
-const getAllBooksHandler = (request, h) => {
+const HandlerGetAllBook = (request, h) => {
   let responseBody;
   const query = request.query;// ngambil query daru url dengan nilai berupa object
-  const {name, reading, finished} = query;// object destructuring, memasukkan value dari property object ke variabel
+  const { name, reading, finished } = query;// object destructuring, memasukkan value dari property object ke variabel
 
   if (name) {// kalo name nya ada pasti true, kalo tidak ada false, kalo false tidak akan dijalankan
     const array = [];
-    for (let i=0; i<books.length; i++) {
+    for (let i = 0; i < books.length; i++) {
       if (books[i].name.toLowerCase().includes(name.toLowerCase())) {
-        const {id, name, publisher} = books[i];
-        array.push({id, name, publisher});
+        const { id, name, publisher } = books[i];
+        array.push({ id, name, publisher });
       }
     }
     responseBody = {
@@ -80,10 +80,10 @@ const getAllBooksHandler = (request, h) => {
 
   if (reading && Number(reading) === 0 || Number(reading) === 1) {// kalo reading ada dan bernilai 0 atau 1, akan dijalankan
     const array = [];
-    for (let i=0; i<books.length; i++) {
+    for (let i = 0; i < books.length; i++) {
       if (books[i].reading == reading) {
-        const {id, name, publisher} = books[i];
-        array.push({id, name, publisher});
+        const { id, name, publisher } = books[i];
+        array.push({ id, name, publisher });
       }
     }
     responseBody = {
@@ -97,10 +97,10 @@ const getAllBooksHandler = (request, h) => {
 
   if (finished && Number(finished) === 0 || Number(finished) === 1) {// kalo finished ada dan bernilai 0 atau 1, akan dijalankan
     const array = [];
-    for (let i=0; i<books.length; i++) {
+    for (let i = 0; i < books.length; i++) {
       if (books[i].finished == finished) {
-        const {id, name, publisher} = books[i];
-        array.push({id, name, publisher});
+        const { id, name, publisher } = books[i];
+        array.push({ id, name, publisher });
       }
     }
     responseBody = {
@@ -112,9 +112,9 @@ const getAllBooksHandler = (request, h) => {
     return responseBody;
   } else if (finished && Number(finished) !== 0 && Number(finished) !== 1) {// kalo finished ada tapi nilainya bukan 0 atau 1
     const array = [];
-    for (let i=0; i<books.length; i++) {
+    for (let i = 0; i < books.length; i++) {
       array.push(
-          {id: books[i].id, name: books[i].name, publisher: books[i].publisher},
+        { id: books[i].id, name: books[i].name, publisher: books[i].publisher },
       );
     }
     responseBody = {
@@ -130,9 +130,9 @@ const getAllBooksHandler = (request, h) => {
    */
   if (books.length > 0 && !name && !reading && !finished) {// get all tanpa query
     const array = [];
-    for (let i=0; i<books.length; i++) {
+    for (let i = 0; i < books.length; i++) {
       array.push(
-          {id: books[i].id, name: books[i].name, publisher: books[i].publisher},
+        { id: books[i].id, name: books[i].name, publisher: books[i].publisher },
       );
     }
     responseBody = {
@@ -153,8 +153,8 @@ const getAllBooksHandler = (request, h) => {
   }
 };
 
-const getBookByIdHandler = (request, h) => {
-  const {id} = request.params;
+const HandlerGetBookById = (request, h) => {
+  const { id } = request.params;
 
   const book = books.filter((b) => b.id === id)[0];// book merupakan object, kalo filter tidak terpenuhi maka menjadi undefined
 
@@ -175,9 +175,9 @@ const getBookByIdHandler = (request, h) => {
   return response;
 };
 
-const editBookByIdHandler = (request, h) => {
+const HandlerEditBookById = (request, h) => {
   const checkNameProperty = request.payload.hasOwnProperty('name');
-  const {readPage, pageCount} = request.payload;
+  const { readPage, pageCount } = request.payload;
   const checkReadPage = readPage <= pageCount;
 
   if (!checkNameProperty) {// jika request body tidak ada property name
@@ -195,9 +195,9 @@ const editBookByIdHandler = (request, h) => {
     response.code(400);
     return response;
   } else if (checkNameProperty && checkReadPage) {
-    const {id} = request.params;
+    const { id } = request.params;
 
-    const {name, year, author, summary, publisher, pageCount, readPage, reading} = request.payload;
+    const { name, year, author, summary, publisher, pageCount, readPage, reading } = request.payload;
     const updatedAt = new Date().toISOString();
 
     const index = books.findIndex((book) => book.id === id);
@@ -233,8 +233,8 @@ const editBookByIdHandler = (request, h) => {
   }
 };
 
-const deleteBookByIdHandler = (request, h) => {
-  const {id} = request.params;
+const HandlerDeleteBookById = (request, h) => {
+  const { id } = request.params;
 
   const index = books.findIndex((book) => book.id === id);
 
@@ -257,9 +257,9 @@ const deleteBookByIdHandler = (request, h) => {
 };
 
 module.exports = {
-  addBookHandler,
-  getAllBooksHandler,
-  getBookByIdHandler,
-  editBookByIdHandler,
-  deleteBookByIdHandler,
+  HandlerAddBook,
+  HandlerDeleteBookById,
+  HandlerEditBookById,
+  HandlerGetAllBook,
+  HandlerGetBookById,
 };

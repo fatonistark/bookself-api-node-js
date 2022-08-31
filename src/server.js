@@ -7,7 +7,7 @@ const init = async () => {
     host: 'localhost',
     routes: {
       cors: {
-        origin: ['*'], // supaya web service bisa di pake oleh aplikasi mana saja
+        origin: ['*'],
       },
     },
   });
